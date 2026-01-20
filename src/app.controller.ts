@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -14,10 +15,14 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { randomUUID } from 'crypto';
 import { extname } from 'path';
 import { diskStorage } from 'multer';
+import { PrismaService } from './prisma.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly prismaService: PrismaService,
+  ) {}
 
   @Get()
   getHello(): string {
@@ -46,7 +51,7 @@ export class AppController {
           if (file.mimetype !== 'video/mp4' && file.mimetype !== 'image/jpeg') {
             return cb(
               new BadRequestException(
-                `Invalid file type. Only video/mp4 and image/jpeg are supported. Got ${file.mimetype}`,
+                `Invalid file type. Only video/mp4 and image/jpeg are supported.`,
               ),
               false,
             );
@@ -58,10 +63,35 @@ export class AppController {
   )
   async uploadVideo(
     @Req() _req: Request,
+    @Body()
+    contentData: {
+      title: string;
+      description: string;
+    },
     @UploadedFiles()
     files: { video?: Express.Multer.File[]; thumbnail?: Express.Multer.File[] },
-  ): Promise<string> {
-    console.log(files);
-    return 'video uploaded';
+  ): Promise<any> {
+    const videoFile = files.video?.[0];
+    const thumbnailFile = files.thumbnail?.[0];
+
+    if (!videoFile || !thumbnailFile) {
+      throw new BadRequestException(
+        'Both video and thumbnail files are required.',
+      );
+    }
+
+    return await this.prismaService.video.create({
+      data: {
+        id: randomUUID(),
+        title: contentData.title,
+        description: contentData.description,
+        url: videoFile.path,
+        thumbnailUrl: thumbnailFile.path,
+        sizeInKb: videoFile.size,
+        duration: 100,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
   }
 }
