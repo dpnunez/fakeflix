@@ -3,10 +3,14 @@ import {
   Body,
   Controller,
   Get,
+  Header,
   HttpCode,
   HttpStatus,
+  NotFoundException,
+  Param,
   Post,
   Req,
+  Res,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -16,6 +20,8 @@ import { randomUUID } from 'crypto';
 import { extname } from 'path';
 import { diskStorage } from 'multer';
 import { PrismaService } from './prisma.service';
+import fs from 'fs';
+import type { Request, Response } from 'express';
 
 @Controller()
 export class AppController {
@@ -92,6 +98,49 @@ export class AppController {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+    });
+  }
+
+  @Get('stream/:videoId')
+  @Header('Content-Type', 'video/mp4')
+  async streamVideo(
+    @Param('videoId') videoId: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<any> {
+    const video = await this.prismaService.video.findUnique({
+      where: { id: videoId },
+    });
+    if (!video) {
+      throw new NotFoundException('Video not found');
+    }
+
+    const videoPath = video.url;
+    const videoSize = fs.statSync(videoPath).size;
+    const range = req.headers.range;
+
+    if (range) {
+      const parts = range.replace(/bytes=/, '').split('-');
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : videoSize - 1;
+
+      const chunkSize = end - start + 1;
+      const file = fs.createReadStream(videoPath, { start, end });
+      const head = {
+        'Content-Range': `bytes ${start}-${end}/${videoSize}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': chunkSize.toString(),
+        'Content-Type': 'video/mp4',
+      };
+      res.writeHead(HttpStatus.PARTIAL_CONTENT, head);
+      file.pipe(res);
+
+      return;
+    }
+
+    res.writeHead(HttpStatus.OK, {
+      'Content-Length': videoSize.toString(),
+      'Content-Type': 'video/mp4',
     });
   }
 }
