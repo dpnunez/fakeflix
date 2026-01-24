@@ -84,13 +84,22 @@ export class ContentController {
       );
     }
 
-    return await this.contentManagementService.createContent({
+    const content = await this.contentManagementService.createContent({
       title: contentData.title,
       description: contentData.description,
       url: videoFile.path,
       thumbnailUrl: thumbnailFile.path,
       sizeInKb: videoFile.size,
     });
+
+    return {
+      id: content.getId(),
+      title: content.getTitle(),
+      description: content.getDescription(),
+      url: content.getMedia()?.getVideo().getUrl() as string,
+      createdAt: content.getCreatedAt(),
+      updatedAt: content.getUpdatedAt(),
+    };
   }
 
   @Get('stream/:videoId')
