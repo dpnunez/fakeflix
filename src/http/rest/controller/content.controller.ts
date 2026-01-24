@@ -22,6 +22,8 @@ import type { Request, Response } from 'express';
 import { ContentManagementService } from '@src/core/service/content-management.service';
 import { MediaPlayerService } from '@src/core/service/media-player.service';
 import { VideoNotFoundException } from '@src/core/exception/video-not-found.exception';
+import { RestResponseInterceptor } from '../interceptor/rest-response.interceptor';
+import { CreateVideoResponseDto } from '../dto/response/create-video-response.dto';
 
 @Controller('content')
 export class ContentController {
@@ -62,6 +64,7 @@ export class ContentController {
       },
     ),
   )
+  @UseInterceptors(new RestResponseInterceptor(CreateVideoResponseDto))
   async uploadVideo(
     @Req() _req: Request,
     @Body()
@@ -71,7 +74,7 @@ export class ContentController {
     },
     @UploadedFiles()
     files: { video?: Express.Multer.File[]; thumbnail?: Express.Multer.File[] },
-  ): Promise<any> {
+  ): Promise<CreateVideoResponseDto> {
     const videoFile = files.video?.[0];
     const thumbnailFile = files.thumbnail?.[0];
 
@@ -96,7 +99,7 @@ export class ContentController {
     @Param('videoId') videoId: string,
     @Req() req: Request,
     @Res() res: Response,
-  ): Promise<any> {
+  ) {
     try {
       const videoUrl = await this.mediaPlayerService.prepareStreaming(videoId);
 
