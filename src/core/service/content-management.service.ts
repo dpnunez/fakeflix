@@ -17,7 +17,9 @@ export interface CreateContentData {
 export class ContentManagementService {
   constructor(private readonly contentRepository: ContentRepository) {}
 
-  async createContent(createContentData: CreateContentData) {
+  async createContent(
+    createContentData: CreateContentData,
+  ): Promise<ContentEntity> {
     const content = ContentEntity.createNew({
       type: ContentType.MOVIE,
       title: createContentData.title,
