@@ -21,7 +21,7 @@ export class MediaPlayerController {
     private readonly mediaPlayerService: MediaPlayerService,
   ) {}
 
-  @Get('stream/:videoId')
+  @Get(':videoId')
   @Header('Content-Type', 'video/mp4')
   async streamVideo(
     @Param('videoId') videoId: string,
