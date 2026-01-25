@@ -84,7 +84,7 @@ export class ContentController {
       );
     }
 
-    const content = await this.contentManagementService.createContent({
+    const createdContent = await this.contentManagementService.createContent({
       title: contentData.title,
       description: contentData.description,
       url: videoFile.path,
@@ -92,13 +92,18 @@ export class ContentController {
       sizeInKb: videoFile.size,
     });
 
+    const video = createdContent.getMedia()?.getVideo();
+    if (!video) {
+      throw new Error('Video must be present');
+    }
+
     return {
-      id: content.getId(),
-      title: content.getTitle(),
-      description: content.getDescription(),
-      url: content.getMedia()?.getVideo().getUrl() as string,
-      createdAt: content.getCreatedAt(),
-      updatedAt: content.getUpdatedAt(),
+      id: createdContent.getId(),
+      title: createdContent.getTitle(),
+      description: createdContent.getDescription(),
+      url: video.getUrl(),
+      createdAt: createdContent.getCreatedAt(),
+      updatedAt: createdContent.getUpdatedAt(),
     };
   }
 
