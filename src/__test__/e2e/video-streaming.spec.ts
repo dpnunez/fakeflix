@@ -54,8 +54,6 @@ describe('ContentController (e2e)', () => {
       const fileSize = 1430145;
       const range = `bytes=0-${fileSize - 1}`;
 
-      console.log(createContent.getMedia()?.getVideo().getId());
-
       const response = await request(app.getHttpServer())
         .get(`/stream/${createContent.getMedia()?.getVideo().getId()}`)
         .set('Range', range)
