@@ -102,31 +102,6 @@ Gere um arquivo Markdown seguindo **exatamente** esta estrutura:
    - Motivação: [por que foi feito]
    - Impacto: [como afeta o projeto]
 
-## 📦 Dependências e Configurações
-
-### Dependências Adicionadas
-```json
-{
-  "[nome-pacote]": "[versão]"
-}
-```
-
-### Dependências Removidas
-- [lista de pacotes removidos, se houver]
-
-### Arquivos de Configuração Modificados
-- `[arquivo]`: [descrição da mudança]
-
-## ⚡ Comandos Executados
-
-```bash
-# [Descrição do que o comando faz]
-[comando]
-
-# [Descrição do próximo comando]
-[comando]
-```
-
 ## 💬 Justificativas do Instrutor (Transcrição do Curso)
 
 > **IMPORTANTE:** Esta seção só deve ser incluída quando há legenda fornecida.
@@ -214,11 +189,6 @@ Interprete e organize as lições mais importantes transmitidas pelo instrutor. 
 1. ✅ **[Decisão 1]** - [Justificativa do porquê está correta]
 2. ✅ **[Decisão 2]** - [Análise]
 
-### Onde Há Espaço para Melhoria
-
-1. ⚠️ **[Ponto 1]** - [Sugestão de melhoria e justificativa]
-2. ⚠️ **[Ponto 2]** - [Contexto e como melhorar]
-
 ### Por Que Essas Diferenças Existem?
 
 [Análise contextual sobre o foco pedagógico vs implementação de produção]
@@ -229,9 +199,6 @@ Interprete e organize as lições mais importantes transmitidas pelo instrutor. 
 - [Documentação relevante]
 - [Artigos ou tutoriais relacionados]
 
-## 📌 Notas Adicionais
-
-[Quaisquer observações importantes, dúvidas para revisitar, ou próximos passos]
 ```
 
 ### Diretrizes de Qualidade
