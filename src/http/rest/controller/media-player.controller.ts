@@ -66,7 +66,7 @@ export class MediaPlayerController {
       }
     } catch (error) {
       if (error instanceof VideoNotFoundException) {
-        return res.sendStatus(HttpStatus.NOT_FOUND).send({
+        return res.status(HttpStatus.NOT_FOUND).send({
           message: error.message,
           error: 'Not Found',
           statusCode: HttpStatus.NOT_FOUND,
