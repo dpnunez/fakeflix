@@ -1,10 +1,10 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
-import { ContentManagementService } from '@src/core/service/content-management.service';
-import { ContentRepository } from '@src/persistence/repository/content.repository';
-import { MovieRepository } from '@src/persistence/repository/movie.repository';
-import { VideoRepository } from '@src/persistence/repository/video.repository';
+import { ContentManagementService } from '@contentModule/core/service/content-management.service';
+import { ContentRepository } from '@contentModule/persistence/repository/content.repository';
+import { MovieRepository } from '@contentModule/persistence/repository/movie.repository';
+import { VideoRepository } from '@contentModule/persistence/repository/video.repository';
 import fs from 'fs';
 import request from 'supertest';
 import nock from 'nock';
@@ -53,8 +53,6 @@ describe('ContentController (e2e)', () => {
 
   describe('GET /stream/:videoId', () => {
     it('streams a video', async () => {
-      //nock has support to native fetch only in 14.0.0-beta.6
-      //https://github.com/nock/nock/issues/2397
       nock('https://api.themoviedb.org/3', {
         encodedQueryParams: true,
         reqheaders: {
@@ -82,7 +80,7 @@ describe('ContentController (e2e)', () => {
         },
       })
         .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
-        .get(`discover/movie`)
+        .get(`/discover/movie`)
         .query({
           with_keywords: '1',
         })
@@ -93,8 +91,6 @@ describe('ContentController (e2e)', () => {
             },
           ],
         });
-
-
       const createdMovie = await contentManagementService.createMovie({
         title: 'Test Video',
         description: 'This is a test video',

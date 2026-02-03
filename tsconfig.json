@@ -25,6 +25,7 @@
     "noUnusedParameters": true,
     "outDir": "./dist",
     "paths": {
+      "@contentModule/*": ["./src/module/content/*"],
       "@src/*": ["./src/*"],
       "@resource/*": ["./resource/*"]
     },
@@ -38,5 +39,5 @@
     "strictNullChecks": true,
     "target": "es2020"
   },
-  "include": ["src/**/*", "test/**/*", "src/http/rest/controller/.ts", "database/**/*"]
+  "include": ["src/**/*", "test/**/*", "src/module/content/http/rest/controller/.ts", "database/**/*"]
 }
