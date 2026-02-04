@@ -8,7 +8,7 @@ import {
   AuthService,
   jwtConstants,
 } from '@identityModule/core/service/authentication.service';
-import { PersistenceModule } from '@sharedModule/persistence/prisma/persistence.module';
+import { PersistenceModule } from '@sharedModules/persistence/prisma/persistence.module';
 
 @Module({
   imports: [

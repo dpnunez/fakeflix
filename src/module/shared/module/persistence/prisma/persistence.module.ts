@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { ConfigModule } from '@sharedModule/config/config.module';
+import { ConfigModule } from '@sharedModules/config/config.module';
 
 @Module({
   imports: [ConfigModule.forRoot()],
