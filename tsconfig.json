@@ -26,7 +26,7 @@
     "outDir": "./dist",
     "paths": {
       "@contentModule/*": ["./src/module/content/*"],
-      "@indentityModule/*": ["./src/module/identity/*"],
+      "@identityModule/*": ["./src/module/identity/*"],
       "@sharedModule/*": ["./src/module/shared/module/*"],
       "@sharedLibs/*": ["./src/module/shared/*"],
       "@src/*": ["./src/*"],
