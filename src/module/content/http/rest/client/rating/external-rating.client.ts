@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { HttpClient } from "@contentModule/infra/http/client/http.client";
-import { ConfigService } from "@sharedModules/config/service/config.service";
+import { Injectable } from '@nestjs/common';
+import { HttpClient } from '@contentModule/infra/http/client/http.client';
+import { ConfigService } from '@sharedModules/config/service/config.service';
 
 interface ApiResponse<T> {
   results: T[];
@@ -8,18 +8,20 @@ interface ApiResponse<T> {
 
 @Injectable()
 export class ExternalRatingClient {
-
-  constructor(private readonly httpClient: HttpClient, private readonly configService: ConfigService) {}
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly configService: ConfigService,
+  ) {}
   async getRating(title: string): Promise<number | undefined> {
-    const keywordId = await this.stringToKeywordId(title)
+    const keywordId = await this.stringToKeywordId(title);
 
     if (!keywordId) {
       return undefined;
     }
 
     const apiResponse = await this.fetch<{ vote_average: number }>(
-        `/discover/movie?with_keywords=${keywordId}`,
-      );
+      `/discover/movie?with_keywords=${keywordId}`,
+    );
 
     return apiResponse.results.length > 0
       ? apiResponse.results[0].vote_average
@@ -38,18 +40,18 @@ export class ExternalRatingClient {
       : undefined;
   }
 
-
-
-  private async fetch<T extends Record<string, any>>(path: string): Promise<ApiResponse<T>> {
+  private async fetch<T extends Record<string, any>>(
+    path: string,
+  ): Promise<ApiResponse<T>> {
     const apiToken = this.configService.get('movieDb').apiToken;
-    const apiUrl = this.configService.get('movieDb').url
+    const apiUrl = this.configService.get('movieDb').url;
     const url = `${apiUrl}${path}`;
     const options = {
-        headers: {
-            'Authorization': `Bearer ${apiToken}`,
-            'Content-Type': 'application/json',
-        },
-    }
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        'Content-Type': 'application/json',
+      },
+    };
     return this.httpClient.get<ApiResponse<T>>(url, options);
   }
 }

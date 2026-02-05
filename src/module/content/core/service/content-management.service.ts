@@ -17,13 +17,16 @@ export interface CreadteMovieData {
 
 @Injectable()
 export class ContentManagementService {
-  constructor(private readonly contentRepository: ContentRepository, private readonly externalMovieRatingClient: ExternalRatingClient) {}
+  constructor(
+    private readonly contentRepository: ContentRepository,
+    private readonly externalMovieRatingClient: ExternalRatingClient,
+  ) {}
 
-  async createMovie(
-    createMovieData: CreadteMovieData,
-  ): Promise<Content> {
-    const externalRating = await this.externalMovieRatingClient.getRating(createMovieData.title);
-    
+  async createMovie(createMovieData: CreadteMovieData): Promise<Content> {
+    const externalRating = await this.externalMovieRatingClient.getRating(
+      createMovieData.title,
+    );
+
     const contentEntity = new Content({
       type: ContentType.MOVIE,
       title: createMovieData.title,
@@ -38,7 +41,7 @@ export class ContentManagementService {
       }),
     });
 
-    if(createMovieData.thumbnailUrl) {
+    if (createMovieData.thumbnailUrl) {
       contentEntity.movie.thumbnail = new Thumbnail({
         url: createMovieData.thumbnailUrl,
       });

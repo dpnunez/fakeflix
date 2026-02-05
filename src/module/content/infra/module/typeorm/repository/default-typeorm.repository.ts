@@ -1,4 +1,9 @@
-import { DataSource, EntityTarget, FindOptionsWhere, ObjectLiteral, Repository } from 'typeorm';
+import {
+  DataSource,
+  EntityTarget,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { DefaultEntity } from '../entity/default.entity';
 
 export abstract class DefaultTypeOrmRepository<T extends DefaultEntity<T>> {
@@ -19,7 +24,9 @@ export abstract class DefaultTypeOrmRepository<T extends DefaultEntity<T>> {
   }
 
   async findOneById(id: string): Promise<T | null> {
-    return await this.repository.findOne({ where: { id } as FindOptionsWhere<T> });
+    return await this.repository.findOne({
+      where: { id } as FindOptionsWhere<T>,
+    });
   }
 
   /**

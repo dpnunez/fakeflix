@@ -11,9 +11,9 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Injectable()
-export class RestResponseInterceptor<
-  T extends object,
-> implements NestInterceptor<any, T> {
+export class RestResponseInterceptor<T extends object>
+  implements NestInterceptor<any, T>
+{
   constructor(private readonly dto: new () => T) {}
 
   intercept(_context: ExecutionContext, next: CallHandler): Observable<T> {
