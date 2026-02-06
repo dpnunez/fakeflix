@@ -1,39 +1,38 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '@src/app.module';
+import { TestingModule } from '@nestjs/testing';
 import { ContentManagementService } from '@contentModule/core/service/content-management.service';
-import { ContentRepository } from '@contentModule/persistence/repository/content.repository';
-import { MovieRepository } from '@contentModule/persistence/repository/movie.repository';
-import { VideoRepository } from '@contentModule/persistence/repository/video.repository';
+
 import fs from 'fs';
 import request from 'supertest';
 import nock, { cleanAll } from 'nock';
+import { VideoRepository } from '@contentModule/persistence/repository/video.repository';
+import { MovieRepository } from '@contentModule/persistence/repository/movie.repository';
+import { ContentRepository } from '@contentModule/persistence/repository/content.repository';
+import { ContentModule } from '@contentModule/content.module';
+import { createNestApp } from '@testInfra/test-e2e.setup';
 
 describe('ContentController (e2e)', () => {
   let module: TestingModule;
   let app: INestApplication;
   let videoRepository: VideoRepository;
-  let contentManagementService: ContentManagementService;
-  let contentRepository: ContentRepository;
   let movieRepository: MovieRepository;
+  let contentRepository: ContentRepository;
+  let contentManagementService: ContentManagementService;
 
   beforeAll(async () => {
-    module = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = module.createNestApplication();
-    await app.init();
+    const nestTestSetup = await createNestApp([ContentModule]);
+    app = nestTestSetup.app;
+    module = nestTestSetup.module;
 
     contentManagementService = module.get<ContentManagementService>(
       ContentManagementService,
     );
     videoRepository = module.get<VideoRepository>(VideoRepository);
-    contentRepository = module.get<ContentRepository>(ContentRepository);
     movieRepository = module.get<MovieRepository>(MovieRepository);
+    contentRepository = module.get<ContentRepository>(ContentRepository);
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest
       .useFakeTimers({ advanceTimers: true })
       .setSystemTime(new Date('2023-01-01'));
@@ -47,7 +46,7 @@ describe('ContentController (e2e)', () => {
   });
 
   afterAll(async () => {
-    await module.close();
+    module.close();
     fs.rmSync('./uploads', { recursive: true, force: true });
   });
 

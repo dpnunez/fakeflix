@@ -1,34 +1,33 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '@src/app.module';
-import { ContentRepository } from '@contentModule/persistence/repository/content.repository';
-import { MovieRepository } from '@contentModule/persistence/repository/movie.repository';
-import { VideoRepository } from '@contentModule/persistence/repository/video.repository';
+import { TestingModule } from '@nestjs/testing';
+
 import fs from 'fs';
 import request from 'supertest';
 import nock, { cleanAll } from 'nock';
+import { VideoRepository } from '@contentModule/persistence/repository/video.repository';
+import { ContentRepository } from '@contentModule/persistence/repository/content.repository';
+import { MovieRepository } from '@contentModule/persistence/repository/movie.repository';
+import { createNestApp } from '@testInfra/test-e2e.setup';
+import { ContentModule } from '@contentModule/content.module';
 
 describe('VideoUploadController (e2e)', () => {
   let module: TestingModule;
   let app: INestApplication;
   let videoRepository: VideoRepository;
-  let movieRepository: MovieRepository;
   let contentRepository: ContentRepository;
+  let movieRepository: MovieRepository;
 
   beforeAll(async () => {
-    module = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = module.createNestApplication();
-    await app.init();
+    const nestTestSetup = await createNestApp([ContentModule]);
+    app = nestTestSetup.app;
+    module = nestTestSetup.module;
 
     videoRepository = module.get<VideoRepository>(VideoRepository);
-    movieRepository = module.get<MovieRepository>(MovieRepository);
     contentRepository = module.get<ContentRepository>(ContentRepository);
+    movieRepository = module.get<MovieRepository>(MovieRepository);
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest
       .useFakeTimers({ advanceTimers: true })
       .setSystemTime(new Date('2023-01-01'));
@@ -42,12 +41,14 @@ describe('VideoUploadController (e2e)', () => {
   });
 
   afterAll(async () => {
-    await module.close();
+    module.close();
     fs.rmSync('./uploads', { recursive: true, force: true });
   });
 
-  describe('/content/video (POST)', () => {
+  describe('/video (POST)', () => {
     it('uploads a video', async () => {
+      //nock has support to native fetch only in 14.0.0-beta.6
+      //https://github.com/nock/nock/issues/2397
       nock('https://api.themoviedb.org/3', {
         encodedQueryParams: true,
         reqheaders: {
@@ -107,7 +108,7 @@ describe('VideoUploadController (e2e)', () => {
           expect(response.body).toMatchObject({
             title: video.title,
             description: video.description,
-            url: expect.stringContaining('mp4') as string,
+            url: expect.stringContaining('mp4'),
           });
         });
     });
