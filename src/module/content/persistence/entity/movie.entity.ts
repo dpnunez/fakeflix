@@ -19,7 +19,7 @@ export class Movie extends DefaultEntity<Movie> {
     cascade: true,
   })
   @JoinColumn()
-  thumbnail: Thumbnail;
+  thumbnail: Thumbnail | null;
 
   @Column({ type: 'float', nullable: true })
   externalRating: number | null;

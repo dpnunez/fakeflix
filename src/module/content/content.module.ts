@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PersistenceModule } from './persistence/persistence.module';
 import { ConfigModule } from '@sharedModules/config/config.module';
-import { VideoUploadController } from './http/rest/controller/video-upload.controller';
+import { AdminMovieController } from './http/rest/controller/admin-movie.controller';
 import { MediaPlayerController } from './http/rest/controller/media-player.controller';
 import { ContentManagementService } from './core/service/content-management.service';
 import { MediaPlayerService } from './core/service/media-player.service';
@@ -16,7 +16,7 @@ import { HttpClientModule } from '@sharedModules/http-client/http-client.module'
     ConfigModule.forRoot(),
     HttpClientModule,
   ],
-  controllers: [VideoUploadController, MediaPlayerController],
+  controllers: [AdminMovieController, MediaPlayerController],
   providers: [
     ContentManagementService,
     MediaPlayerService,

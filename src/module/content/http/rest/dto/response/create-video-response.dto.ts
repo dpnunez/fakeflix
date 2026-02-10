@@ -28,7 +28,7 @@ export class CreateVideoResponseDto {
 
   @IsString()
   @Expose()
-  thumbnailUrl: string;
+  thumbnailUrl: string | null;
 
   @IsNumber()
   @Expose()

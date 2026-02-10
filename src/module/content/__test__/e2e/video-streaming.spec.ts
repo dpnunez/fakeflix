@@ -5,18 +5,14 @@ import { ContentManagementService } from '@contentModule/core/service/content-ma
 import fs from 'fs';
 import request from 'supertest';
 import nock, { cleanAll } from 'nock';
-import { VideoRepository } from '@contentModule/persistence/repository/video.repository';
-import { MovieRepository } from '@contentModule/persistence/repository/movie.repository';
-import { ContentRepository } from '@contentModule/persistence/repository/content.repository';
 import { ContentModule } from '@contentModule/content.module';
 import { createNestApp } from '@testInfra/test-e2e.setup';
+import { testDbClient } from '@testInfra/knex.database';
+import { Tables } from '@testInfra/enum/table.enum';
 
 describe('ContentController (e2e)', () => {
   let module: TestingModule;
   let app: INestApplication;
-  let videoRepository: VideoRepository;
-  let movieRepository: MovieRepository;
-  let contentRepository: ContentRepository;
   let contentManagementService: ContentManagementService;
 
   beforeAll(async () => {
@@ -27,9 +23,6 @@ describe('ContentController (e2e)', () => {
     contentManagementService = module.get<ContentManagementService>(
       ContentManagementService,
     );
-    videoRepository = module.get<VideoRepository>(VideoRepository);
-    movieRepository = module.get<MovieRepository>(MovieRepository);
-    contentRepository = module.get<ContentRepository>(ContentRepository);
   });
 
   beforeEach(async () => {
@@ -39,9 +32,10 @@ describe('ContentController (e2e)', () => {
   });
 
   afterEach(async () => {
-    await videoRepository.deleteAll();
-    await movieRepository.deleteAll();
-    await contentRepository.deleteAll();
+    await testDbClient(Tables.Video).del();
+    await testDbClient(Tables.Movie).del();
+    await testDbClient(Tables.Thumbnail).del();
+    await testDbClient(Tables.Content).del();
     cleanAll();
   });
 
