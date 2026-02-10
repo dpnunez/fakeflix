@@ -15,7 +15,7 @@ import { DomainModuleIntegrationModule } from '@sharedModules/integration/interf
 import { BillingSubscriptionStatusApi } from '@sharedModules/integration/interface/billing-integration.interface';
 import { BillingSubscriptionRepository } from './persistence/repository/external/billing-subscription.repository';
 import { BillingModule } from '@billingModule/billing.module';
-import { BillingSubscriptionHttpClient } from '@sharedModules/integration/client/billing-subscription-http.client';
+import { BillingPublicApiProvider } from '@billingModule/integration/provider/public-api.provider';
 
 @Module({
   imports: [
@@ -34,7 +34,7 @@ import { BillingSubscriptionHttpClient } from '@sharedModules/integration/client
   providers: [
     {
       provide: BillingSubscriptionStatusApi,
-      useExisting: BillingSubscriptionHttpClient,
+      useExisting: BillingPublicApiProvider,
     },
     AuthService,
     AuthResolver,
