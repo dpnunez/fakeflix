@@ -14,8 +14,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { DomainModuleIntegrationModule } from '@sharedModules/integration/interface/domain-module-integration.module';
 import { BillingSubscriptionStatusApi } from '@sharedModules/integration/interface/billing-integration.interface';
 import { BillingSubscriptionRepository } from './persistence/repository/external/billing-subscription.repository';
-import { BillingPublicApiProvider } from '@billingModule/integration/provider/public-api.provider';
 import { BillingModule } from '@billingModule/billing.module';
+import { BillingSubscriptionHttpClient } from '@sharedModules/integration/client/billing-subscription-http.client';
 
 @Module({
   imports: [
@@ -34,7 +34,7 @@ import { BillingModule } from '@billingModule/billing.module';
   providers: [
     {
       provide: BillingSubscriptionStatusApi,
-      useExisting: BillingPublicApiProvider,
+      useExisting: BillingSubscriptionHttpClient,
     },
     AuthService,
     AuthResolver,
