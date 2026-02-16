@@ -100,7 +100,7 @@ export class AdminMovieController {
       title: createdMovie.title,
       description: createdMovie.description,
       url: createdMovie.movie.video.url,
-      thumbnailUrl: createdMovie.movie.thumbnail?.url ?? null,
+      thumbnailUrl: createdMovie.movie.thumbnail?.url,
       sizeInKb: createdMovie.movie.video.sizeInKb,
       duration: createdMovie.movie.video.duration,
       createdAt: createdMovie.createdAt,

@@ -1,5 +1,11 @@
 import { Expose } from 'class-transformer';
-import { IsDate, IsNumber, IsString, IsUUID } from 'class-validator';
+import {
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateVideoResponseDto {
   @IsUUID(4)
@@ -28,7 +34,8 @@ export class CreateVideoResponseDto {
 
   @IsString()
   @Expose()
-  thumbnailUrl: string | null;
+  @IsOptional()
+  thumbnailUrl?: string;
 
   @IsNumber()
   @Expose()

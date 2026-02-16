@@ -1,11 +1,11 @@
+import { DefaultEntity } from '@sharedModules/persistence/typeorm/entity/default.entity';
 import {
   DataSource,
   EntityTarget,
+  FindOneOptions,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
-import { DefaultEntity } from '../entity/default.entity';
-
 export abstract class DefaultTypeOrmRepository<T extends DefaultEntity<T>> {
   private repository: Repository<T>;
   constructor(
@@ -18,14 +18,30 @@ export abstract class DefaultTypeOrmRepository<T extends DefaultEntity<T>> {
      */
     this.repository = dataSource.getRepository(entity);
   }
-
   async save(entity: T): Promise<T> {
     return await this.repository.save(entity);
   }
 
-  async findOneById(id: string): Promise<T | null> {
-    return await this.repository.findOne({
+  async findOneById(id: string, relations?: string[]): Promise<T | null> {
+    return this.repository.findOne({
       where: { id } as FindOptionsWhere<T>,
+      relations,
+    });
+  }
+
+  async find(options: FindOneOptions<T>): Promise<T | null> {
+    return this.repository.findOne(options);
+  }
+
+  async exists(id: string): Promise<boolean> {
+    return this.repository.exists({
+      where: { id } as FindOptionsWhere<T>,
+    });
+  }
+
+  async existsBy(properties: FindOptionsWhere<T>): Promise<boolean> {
+    return this.repository.exists({
+      where: properties,
     });
   }
 }
