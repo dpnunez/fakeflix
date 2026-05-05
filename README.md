@@ -31,6 +31,60 @@
 $ yarn install
 ```
 
+## Database
+
+### Subir o banco
+
+```bash
+docker compose up -d
+```
+
+### Rodar as migrations (primeira vez ou após recriar o banco)
+
+A ordem importa porque Prisma, TypeORM e Drizzle compartilham o schema `public`.
+
+```bash
+# 1. Identity (Prisma) — deve ser o primeiro, enquanto o public está vazio
+$ yarn identity:db:migrate
+
+# 2. Content (TypeORM)
+$ yarn content:db:migrate
+
+# 3. Billing (Drizzle)
+$ yarn billing:db:migrate
+```
+
+### Recriar o banco do zero
+
+```bash
+# 1. Derrubar o container e apagar os dados
+docker compose down -v
+rm -rf .data
+
+# 2. Subir um banco limpo
+docker compose up -d
+
+# 3. Rodar as migrations na ordem correta (ver acima)
+yarn identity:db:migrate
+yarn content:db:migrate
+yarn billing:db:migrate
+```
+
+### Gerar novas migrations após alterar schemas
+
+```bash
+# Content (TypeORM) — gera o arquivo e aplica
+$ yarn content:db:generate
+$ yarn content:db:migrate
+
+# Identity (Prisma) — requer terminal interativo (TTY)
+$ yarn identity:db:generate
+
+# Billing (Drizzle) — gera o arquivo e aplica
+$ yarn billing:db:generate
+$ yarn billing:db:migrate
+```
+
 ## Compile and run the project
 
 ```bash
